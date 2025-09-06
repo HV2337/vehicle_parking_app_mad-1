@@ -1,4 +1,4 @@
-# vehicle-parking-app-v1
+# vehicle-parking-app
 # Parking Management System (Flask)
 A responsive, full-stack parking management system built with Flask, SQLAlchemy, Bootstrap, and Matplotlib. It features separate Admin and User dashboards, parking spot tracking, live charts, and reservation management.
 
