@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}LogIn{% endblock %}
+{% block content %}
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow p-4" style="max-width: 450px; width: 100%;">
+        <h2 class="text-center mb-4">🔐 User Login</h2>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, msg in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ msg }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form action="{{ url_for('login') }}" method="POST">
+            <div class="mb-3">
+                <label for="identifier" class="form-label">Username or Email</label>
+                <input type="text" class="form-control" id="identifier" name="identifier" value="{{ identifier }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary">Log In</button>
+            </div>
+        </form>
+        
+        <div class="text-center">
+            <small>New here? 
+                <a href="{{ url_for('signup') }}" class="text-decoration-none">Sign up now</a>
+            </small>
+        </div>
+    </div>
+</div>
+{% endblock %}

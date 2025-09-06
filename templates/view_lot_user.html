@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}View-Lot-User{% endblock %}
+{% block content %}
+
+<!-- Navbar (already included in base.html if it's centralized) -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Park App</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMenu">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('user.user_dashboard') }}">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('user.user_summary') }}">Summary</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-danger" href="{{ url_for('logout') }}">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ msg }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- Parking Lot Details -->
+  <div class="text-center mb-4">
+    <h2>Parking Lot: {{ lot.prime_location_name }}</h2>
+    <p><strong>Address:</strong> {{ lot.address }}</p>
+    <p><strong>Pincode:</strong> {{ lot.pincode }}</p>
+    <p><strong>Total Spots:</strong> {{ lot.maximum_number_of_spots }}</p>
+  </div>
+
+  <!-- Spot Table -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover text-center align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Spot Number</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for spot in spots %}
+        <tr>
+          <td>{{ spot.spot_number }}</td>
+          <td>
+            {% if spot.status == 'A' %}
+              <span class="text-success fw-bold">Available</span>
+            {% elif spot.status == 'O' %}
+              <span class="text-danger fw-bold">Occupied</span>
+            {% else %}
+              Unknown
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Back Button -->
+  <div class="text-center mt-4">
+    <a href="{{ url_for('user.user_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+  </div>
+
+</div>
+
+{% endblock %}

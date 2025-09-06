@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}View Spot{% endblock %}
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ msg }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Spot Header -->
+    <div class="card mb-4">
+        <div class="card-body text-center">
+            <h2>Spot Number: {{ spot.spot_number }} <br> 
+                <small class="text-muted">(Lot: {{ spot.lot.prime_location_name }})</small>
+            </h2>
+            <p>
+                <strong>Status:</strong>
+                {% if spot.status == 'A' %}
+                    <span class="text-success">Available</span>
+                {% else %}
+                    <span class="text-danger">Occupied</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Reservation Table -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3 class="card-title">All Reservations for this Spot</h3>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>User</th>
+                            <th>Status</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Cost per Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for res in reservations %}
+                        <tr>
+                            <td>{{ res.user.full_name }}</td>
+                            <td>{{ res.reservation_status }}</td>
+                            <td>{{ res.parking_timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ res.leaving_timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>₹{{ res.parking_cost_per_unit_time }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5">No reservations yet for this spot.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center mt-3">
+        <a href="{{ url_for('admin_routes.view_lot', lot_id=spot.lot_id) }}" class="btn btn-secondary">Back to Lot</a>
+    </div>
+
+</div>
+{% endblock %}

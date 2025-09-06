@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Admin Summary{% endblock %}
+{% block content %}
+
+<!-- Dummy Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">ParkingAdmin</a>
+    <ul class="navbar-nav me-auto">
+      <li class="nav-item"><a class="nav-link" href="/admin/dashboard">Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="/admin/create_lot">Create a New Lot</a></li>
+      <li class="nav-item"><a class="nav-link" href="/admin/view_users">View Users</a></li>
+      <li class="nav-item"><a class="nav-link" href="/admin/search">Search Users/Spots</a></li>
+    </ul>
+    <span class="navbar-text me-3">Logged in as: {{ user.username }}</span>
+      <a class="btn btn-outline-light btn-sm" href="/logout">Logout</a>
+  </div>
+</nav>
+
+<!-- Flash Messages -->
+<div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ msg }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+</div>
+
+<h2 class="mb-3">Welcome, Admin {{ user.username }}</h2>
+
+{% if no_data %}
+  <div class="alert alert-warning">No data available to generate summary. Please add parking lots and spots.</div>
+{% else %}
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-primary text-white">Overall Summary</div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Total Parking Lots: {{ total_lots }}</li>
+          <li class="list-group-item">Total Parking Spots: {{ total_spots }}</li>
+          <li class="list-group-item">Available Spots: {{ total_available }}</li>
+          <li class="list-group-item">Occupied Spots: {{ total_occupied }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-success text-white">Reservation Statuses</div>
+        <ul class="list-group list-group-flush">
+          {% for status, count in reservation_counts.items() %}
+            <li class="list-group-item">{{ status }}: {{ count }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 text-center">
+      <h5>Spot Availability</h5>
+      <img src="data:image/png;base64,{{ plot1 }}" alt="Spot Availability Pie Chart" class="img-fluid rounded shadow">
+    </div>
+    <div class="col-md-6 text-center">
+      <h5>Reservation Status</h5>
+      <img src="data:image/png;base64,{{ plot2 }}" alt="Reservation Status Bar Chart" class="img-fluid rounded shadow">
+    </div>
+  </div>
+{% endif %}
+
+<div class="mt-4 text-center">
+  <a href="{{ url_for('admin_routes.admin_dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block title %}User Summary{% endblock %}
+{% block content %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Park App</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMenu">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('user.user_dashboard') }}">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('user.user_summary') }}">Summary</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-danger" href="{{ url_for('logout') }}">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Flash Messages -->
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ msg }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+</div>
+
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">Your Parking Summary</h2>
+
+  <!-- Summary Cards -->
+  <div class="row text-center mb-5">
+    <div class="col-md-6 mb-3">
+      <div class="card shadow rounded p-3 h-100">
+        <h5>Total Hours Parked</h5>
+        <p class="display-6">{{ total_duration | round(2) }}</p>
+      </div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <div class="card shadow rounded p-3 h-100">
+        <h5>Total Amount Spent (₹)</h5>
+        <p class="display-6">{{ total_amount | round(2) }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reservations by Lot -->
+  <div class="card mb-4 shadow">
+    <div class="card-header">
+      <h5 class="mb-0">Reservations by Lot</h5>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped text-center">
+        <thead>
+          <tr>
+            <th>Lot Name</th>
+            <th>Reservation Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for lot, count in lot_wise_count.items() %}
+            <tr>
+              <td>{{ lot }}</td>
+              <td>{{ count }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Parking History -->
+  <div class="card mb-4 shadow">
+    <div class="card-header">
+      <h5 class="mb-0">Your Parking History</h5>
+    </div>
+    <div class="card-body">
+      {% if reservations %}
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover text-center align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Lot</th>
+                <th>Spot</th>
+                <th>Occupied</th>
+                <th>Released</th>
+                <th>Price (₹)</th>
+                <th>Duration (hrs)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for res in reservations %}
+                <tr>
+                  <td>{{ res.spot.lot.prime_location_name }}</td>
+                  <td>{{ res.spot.spot_number }}</td>
+                  <td>{{ res.parking_timestamp or "N/A" }}</td>
+                  <td>{{ res.leaving_timestamp or "N/A" }}</td>
+                  <td>{{ res.parking_cost_per_unit_time or "N/A" }}</td>
+                  <td>
+                    {% if res.parking_timestamp and res.leaving_timestamp %}
+                      {{ ((res.leaving_timestamp - res.parking_timestamp).total_seconds() / 3600) | round(2) }}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted">No past reservations to display.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card shadow p-3 mb-3">
+        <h5 class="text-center">Lot-wise Parking Frequency</h5>
+        <img src="data:image/png;base64,{{ img1 }}" class="img-fluid mx-auto d-block" />
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="card shadow p-3 mb-3">
+        <h5 class="text-center">Monthly Parking Summary</h5>
+        <img src="data:image/png;base64,{{ img2 }}" class="img-fluid mx-auto d-block" />
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="card shadow p-3 mb-3">
+        <h5 class="text-center">Total Hours Spent per Lot</h5>
+        <img src="data:image/png;base64,{{ img3 }}" class="img-fluid mx-auto d-block" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <div class="text-center mb-5">
+    <a href="{{ url_for('user.user_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+  </div>
+</div>
+
+{% endblock %}

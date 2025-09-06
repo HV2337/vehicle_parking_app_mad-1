@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Admin Search{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Search Users or Parking Spots</h2>
+
+    <form method="POST" class="d-flex justify-content-center mb-4">
+        <input type="text" name="query" class="form-control w-50 me-2" placeholder="Search username, email, spot ID or status" value="{{ query }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if users %}
+        <h3 class="mt-4">Matching Users</h3>
+        <ul class="list-group mb-4">
+            {% for u in users %}
+                <li class="list-group-item"><b>{{ u.username }}</b> : ({{ u.email }})</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if spots %}
+        <h3 class="mt-4">Matching Parking Spots</h3>
+        <ul class="list-group mb-4">
+            {% for s in spots %}
+                <li class="list-group-item">Spot ID: {{ s.id }}, Lot: {{ s.lot.prime_location_name }}, Status: {{ s.status }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if query and not users and not spots %}
+        <div class="alert alert-warning text-center" role="alert">
+            No results found for "{{ query }}".
+        </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('admin_routes.admin_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

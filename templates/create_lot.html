@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Admin-Create-Lot{% endblock %}
+{% block content %}
+<div class="container mt-4">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ msg }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h2 class="text-center mb-4">Create New Parking Lot</h2>
+
+    <form action="{{ url_for('admin_routes.create_lot') }}" method="post" class="mx-auto" style="max-width: 600px;">
+        <div class="mb-3">
+            <label class="form-label">Prime Location Name</label>
+            <input type="text" class="form-control" name="prime_location" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Price</label>
+            <input type="number" step="0.01" class="form-control" name="price" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Address</label>
+            <textarea class="form-control" name="address" rows="4" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Pincode</label>
+            <input type="number" class="form-control" name="pincode" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label">Maximum Number of Spots</label>
+            <input type="number" class="form-control" name="max_spots" required>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Create Lot</button>
+            <a href="{{ url_for('admin_routes.admin_dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

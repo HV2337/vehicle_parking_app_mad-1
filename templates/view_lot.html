@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}View Lot{% endblock %}
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Lot Header and Actions -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body text-center">
+            <h2 class="card-title">Lot: {{ lot.prime_location_name }}</h2>
+            <a href="{{ url_for('admin_routes.edit_lot', lot_id=lot.id) }}" class="btn btn-primary mx-2">Edit Lot</a>
+            <a href="{{ url_for('admin_routes.delete_lot', lot_id=lot.id) }}" class="btn btn-danger mx-2"
+               onclick="return confirm('Are you sure you want to delete this lot?');">Delete Lot</a>
+        </div>
+    </div>
+
+    <!-- Lot Details -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title">Lot Details</h4>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Address:</strong> {{ lot.address }}</li>
+                <li class="list-group-item"><strong>Pincode:</strong> {{ lot.pincode }}</li>
+                <li class="list-group-item"><strong>Price per unit time:</strong> ₹{{ lot.price }}</li>
+                <li class="list-group-item"><strong>Total Spots:</strong> {{ lot.maximum_number_of_spots }}</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body text-center">
+            <h4 class="card-title">Spot Status Pie Chart</h4>
+            <img src="{{ url_for('static', filename='lot_' ~ lot.id ~ '_status_pie.png') }}" 
+                 alt="Spot Status Pie Chart" class="img-fluid" style="max-width: 400px;">
+        </div>
+    </div>
+
+    <!-- Spots Table -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title mb-3">Spots in this Lot</h4>
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Spot Number</th>
+                        <th>Status</th>
+                        <th>Latest Reservation</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in spot_data %}
+                    <tr>
+                        <td>{{ item.spot.spot_number }}</td>
+                        <td>
+                            {% if item.spot.status == 'A' %}
+                                <span class="text-success">Available</span>
+                            {% else %}
+                                <span class="text-danger">Occupied</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if item.latest_reservation %}
+                                {{ item.latest_reservation.user.full_name }}<br>
+                                Status: {{ item.latest_reservation.reservation_status }}<br>
+                                From: {{ item.latest_reservation.parking_timestamp }}<br>
+                                To: {{ item.latest_reservation.leaving_timestamp }}
+                            {% else %}
+                                No reservations yet
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin_routes.view_spot', spot_id=item.spot.id) }}" class="btn btn-info btn-sm">View Spot</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('admin_routes.admin_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

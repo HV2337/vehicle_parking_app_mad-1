@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+{% block content %}
+<header>
+    <div class="back-button-container">
+        <a href="{{ url_for('home') }}" class="back-button">← Back to Home</a>
+    </div>
+</header>
+<main>
+    <section class="about-section">
+    <h2>About Us</h2>
+    <p>
+        Parking App is your reliable partner in urban parking management. We aim to simplify the way you find,
+        reserve, and manage parking spots across various locations. Whether you're a daily commuter or an
+        occasional visitor, our system ensures a hassle-free parking experience.
+    </p>
+    <p>
+        Our platform is designed to offer real-time updates on parking availability, allow instant reservations,
+        and track your usage history with ease. We’re committed to reducing the stress and time wasted in finding
+        a parking spot, especially in busy cities.
+    </p>
+    <p>
+        Built with scalability, simplicity, and smart features in mind, Parking App serves as a bridge between
+        technology and efficient urban mobility. We believe better parking means better cities.
+    </p>
+</section>
+</main>
+{% endblock %}

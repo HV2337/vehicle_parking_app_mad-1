@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+{% block content %}
+<nav class="navbar">
+    <div class="nav-logo">Parking App</div>
+    <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+        <a href="/about">About Us</a>
+    </div>
+</nav>
+<header class="welcome-section">
+    <img src="{{ url_for('static', filename='banner.jpg') }}" alt="Parking Banner" class="banner-img">
+    <h1>Welcome to Parking App</h1>
+    <p>Your smart solution to finding and managing parking spaces with ease.</p>
+</header>
+<main>
+    <section id="about" class="about-section">
+        <h2>About Us</h2>
+        <p>
+            Parking App is your reliable partner in urban parking management. We aim to simplify the way you find,
+            reserve, and manage parking spots across various locations. Whether you're a daily commuter or an
+            occasional visitor, our system ensures a hassle-free parking experience.
+        </p>
+    </section>
+</main>
+{% endblock %}

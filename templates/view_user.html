@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}User Details - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ msg }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h2 class="mb-4 text-center">User Details</h2>
+    
+    <div class="mb-3">
+        <p><strong>Full Name:</strong> {{ user.full_name }}</p>
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Phone:</strong> {{ user.phone }}</p>
+    </div>
+
+    <h4 class="mt-5">Reservations</h4>
+    {% if reservations %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Reservation ID</th>
+                        <th>Spot Number</th>
+                        <th>Lot</th>
+                        <th>Parked At</th>
+                        <th>Left At</th>
+                        <th>Status</th>
+                        <th>Cost/unit time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for res in reservations %}
+                    <tr>
+                        <td>{{ res.id }}</td>
+                        <td>{{ res.spot.spot_number }}</td>
+                        <td>{{ res.spot.lot.prime_location_name }}</td>
+                        <td>{{ res.parking_timestamp }}</td>
+                        <td>{{ res.leaving_timestamp }}</td>
+                        <td>{{ res.reservation_status }}</td>
+                        <td>{{ res.parking_cost_per_unit_time }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-muted mt-3">No reservations found for this user.</p>
+    {% endif %}
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('admin_routes.list_users') }}" class="btn btn-secondary">Back to Users List</a>
+    </div>
+</div>
+{% endblock %}

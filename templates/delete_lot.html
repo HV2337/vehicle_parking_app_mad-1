@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Admin-Edit-Lot{% endblock %}
+{% block content %}
+<div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+			{% for category, msg in messages %}
+				<p class="flash {{category}}">{{msg}}</p>
+			{% endfor %}
+		{% endif %}
+    {% endwith %}
+</div>
+<div>
+    <form action="{{ url_for('admin_routes.delete_lot', lot_id=lot.id) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this lot?');">
+    <p><strong>Delete Lot</strong></p><br><br><br><input type="submit" value="Delete Lot" class="btn btn-danger">
+</form>
+</div>
+{% endblock %}
